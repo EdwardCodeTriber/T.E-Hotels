@@ -4,20 +4,34 @@ import { Box, Typography, Button, Container } from '@mui/material';
 const Landing = () => {
   return (
     <div>
-        <Box
+       <Box
       sx={{
-        backgroundImage: 'url(./assets/dashboard-back.jpg)',
+        backgroundImage: 'url(/dashboard-back.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
-        color: 'black',
+        color: 'Black',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+        position: 'relative',
       }}
     >
+      {/* Centered Logo Section */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '20px',  
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      >
+        <img src="/Logo.png" alt="Logo" style={{ width: '100px', borderRadius:"50%" }} />
+      </Box>
+
+      {/* Main Content */}
       <Container maxWidth="md">
         <Box sx={{ mb: 4 }}>
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>

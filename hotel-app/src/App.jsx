@@ -1,18 +1,24 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import LandingPage from './components/LandingPage'
 import Landing from './components/Landing'
+import LogIn from './components/LogIn'
+import Register from './components/Register'
+import Home from './components/Home'
 
 function App() {
 
   return (
     <>
-    {/* <BrowserRouter>
+    <BrowserRouter>
     <Routes>
-      <Route path='/' element={<LandingPage/>}/>
+      <Route path='/' element={<Landing/>}/>
+      <Route path='/LogIn' element={<LogIn/>}/>
+      <Route path='/Register' element={<Register/>}/>
+      
+
     </Routes>
-    </BrowserRouter> */}
-    <LandingPage/>
-    <Landing/>
+    </BrowserRouter>
+    
+    {/* <Landing/> */}
       
     </>
   )
