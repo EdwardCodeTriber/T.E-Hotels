@@ -1,12 +1,19 @@
 import React from 'react'
+import {Link} from "react-router-dom"
+import {useNavigate} from 'react-router-dom'
 import { Box, Typography, Button, Container } from '@mui/material';
+import picture from '../assets/dashboard-back.jpg'
 
 const Landing = () => {
+    const navigate = useNavigate();
+    const toLogin =(()=>{
+        navigate('/LogIn')
+    })
   return (
-    <div>
+    <div style={{backgroundImage: `url(${picture})`}}>
        <Box
       sx={{
-        backgroundImage: 'url(/dashboard-back.jpg)',
+        
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
@@ -39,7 +46,7 @@ const Landing = () => {
           </Typography>
         </Box>
         <Box sx={{ mb: 4 }}>
-          <Button variant="contained" color="primary" sx={{ mr: 2 }}>
+          <Button variant="contained" color="primary" sx={{ mr: 2 }} onClick={toLogin}>
             Sign In
           </Button>
           <Button variant="contained" color="secondary">
