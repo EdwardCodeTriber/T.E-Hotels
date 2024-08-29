@@ -31,6 +31,7 @@ const Home = () => {
 
     // const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState(null);
     // Navigation code
     // const showPop = (() =>{
     //     navigate('/HotelRoomPopup')
@@ -39,12 +40,14 @@ const Home = () => {
     
 
     // Opens dialog after Book button click 
-    const handleClickOpen = () => {
+    const handleClickOpen = (room) => {
+        setSelectedRoom(room);
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+        setSelectedRoom(null);
     };
   return (
     <div>
@@ -112,7 +115,7 @@ const Home = () => {
                   <CardActions
                     sx={{ display: "flex", justifyContent: "flex-end" }}
                   >
-                    <Button size="small" variant="contained" color="primary" onClick={handleClickOpen}>
+                    <Button size="small" variant="contained" color="primary" onClick={() => handleClickOpen(room)}>
                       View
                     </Button>
                   </CardActions>
@@ -122,29 +125,29 @@ const Home = () => {
           </Grid>
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
             <DialogContent >
-                <NavbarRoom/>
-            {roomData.map((room) =>(
+                {/* <NavbarRoom/> */}
+            {selectedRoom && (
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={6} key={room.title}>
+                <Grid item xs={12} md={6} >
                     <Card>
                         <CardMedia
                             component="img"
-                            alt={room.title}
+                            alt={selectedRoom.title}
                             height="300"
-                            image={room.image}
+                            image={selectedRoom.image}
                         />
                     </Card>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <CardContent>
                         <Typography variant="h5" component="div">
-                            {room.title}
+                            {selectedRoom.title}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" paragraph>
-                            {room.description}
+                            {selectedRoom.description}
                         </Typography>
                         <Typography variant="h6" component="div">
-                            {room.price}
+                            {selectedRoom.price}
                         </Typography>
                         <Button variant="contained" color="primary" onClick={handleClose}>
                             Book
@@ -152,7 +155,7 @@ const Home = () => {
                     </CardContent>
                 </Grid>
             </Grid>
-            ))}
+            )}
           </DialogContent>
           </Dialog>
           
