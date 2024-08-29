@@ -1,13 +1,19 @@
 import React from 'react'
 import { Box, Typography, Button, TextField, Avatar, Container } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import {useNavigate} from "react-router-dom"
+import picture from "../assets/outdoor.jpg"
 
 const LogIn = () => {
+  const navigate = useNavigate();
+  const toHome = (()=>{
+    navigate("/Home")
+  })
   return (
     <div>
         <Box
       sx={{
-        backgroundImage: 'url(/path-to-your-background-image.jpg)',
+        backgroundImage: `url(${picture})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
@@ -96,6 +102,7 @@ const LogIn = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2, backgroundColor: 'green' }}
+          onClick={toHome}
         >
           Sign In
         </Button>

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link} from "react-router-dom"
+// import {Link} from "react-router-dom"
 import {useNavigate} from 'react-router-dom'
 import { Box, Typography, Button, Container } from '@mui/material';
 import picture from '../assets/dashboard-back.jpg'
@@ -9,15 +9,18 @@ const Landing = () => {
     const toLogin =(()=>{
         navigate('/LogIn')
     })
+    const toHome = (()=>{
+        navigate("/Home");
+    })
   return (
-    <div style={{backgroundImage: `url(${picture})`}}>
+    // <div style={{}}>
        <Box
       sx={{
-        
-        backgroundSize: 'cover',
+        backgroundImage: `url(${picture})`,
+        backgroundSize:"cover",
         backgroundPosition: 'center',
         height: '100vh',
-        color: 'Black',
+        color: 'white',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -49,7 +52,7 @@ const Landing = () => {
           <Button variant="contained" color="primary" sx={{ mr: 2 }} onClick={toLogin}>
             Sign In
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" onClick={toHome}>
             View Rooms
           </Button>
         </Box>
@@ -64,7 +67,7 @@ const Landing = () => {
         </Typography>
       </Container>
     </Box>
-    </div>
+    // </div>
   )
 }
 

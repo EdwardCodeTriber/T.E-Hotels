@@ -3,14 +3,25 @@ import { Container, Box, AppBar, Toolbar, Typography, Button, IconButton, TextFi
 import SearchIcon from '@mui/icons-material/Search';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfoIcon from '@mui/icons-material/Info';
+import picture from '../assets/outdoor-2.jpg';
+import picture1 from '../assets/room-1.jpg';
+import picture2 from '../assets/room-4.jpg';
+import picture3 from '../assets/view-room-6.jpg';
+import picture5 from '../assets/room-5.jpg';
 
 const Home = () => {
   return (
     <div>
-         <AppBar position="static" sx={{ backgroundColor: '#3f51b5' }}>
+        <Box sx={{
+            backgroundImage: `url(${picture})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '100%',
+        }}>
+        <AppBar position="static" sx={{ backgroundColor: '#3f51b5' }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            T.E.
+            T.E. Hotels
           </Typography>
           <Button color="inherit">Home</Button>
           <Button color="inherit">Contact Us</Button>
@@ -41,11 +52,13 @@ const Home = () => {
           <Typography variant="h4">Book a beautiful room to live in</Typography>
           <Typography variant="h6">Find a source you want to spend time in</Typography>
         </Box>
-
+        <Container sx={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}}>
+            
+        </Container>
         <Grid container spacing={4}>
           {roomData.map((room) => (
             <Grid item xs={12} md={6} lg={4} key={room.title}>
-              <Card>
+              <Card sx={{backgroundColor: 'rgba(0, 0, 0, 0.7)', color:"white"}}>
                 <CardMedia
                   component="img"
                   height="140"
@@ -57,7 +70,7 @@ const Home = () => {
                   {/* Replace with rating component */}
                   <Typography>⭐⭐</Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions sx={{display:"flex", justifyContent:"flex-end"}}>
                   <Button size="small" variant="contained" color="primary">Book</Button>
                 </CardActions>
               </Card>
@@ -65,25 +78,27 @@ const Home = () => {
           ))}
         </Grid>
       </Container>
+        </Box>
+         
     </div>
   )
 }
 const roomData = [
     {
       title: 'Closed View Room',
-      image: './assets/room-1.jpg', 
+      image: `${picture1}`, 
     },
     {
       title: 'Outside View Room',
-      image: './assets/view-room-6.jpg',
+      image: `${picture2}`,
     },
     {
       title: 'Top Garden Room',
-      image: './assets/room-4.jpg',
+      image: `${picture5}`,
     },
     {
       title: 'Full 180° View Room',
-      image: './assets/room-5.jpg',
+      image: `${picture3}`,
     },
   ];
 export default Home

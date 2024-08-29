@@ -1,4 +1,6 @@
 import React from "react";
+import {useNavigate} from "react-router-dom"
+import picture from "../assets/outdoor-1.jpg"
 import {
   Box,
   Typography,
@@ -10,11 +12,15 @@ import {
 } from "@mui/material";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const toSignIn = (()=>{
+    navigate("/Login")
+  })
   return (
     <div>
       <Box
         sx={{
-          backgroundImage: "url(/beach-back.jpg)",
+          backgroundImage: `url(${picture})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: "100vh",
@@ -166,6 +172,7 @@ const Register = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2, backgroundColor: "green" }}
+            onClick={toSignIn}
           >
             Register
           </Button>
