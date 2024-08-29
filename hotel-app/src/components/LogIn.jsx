@@ -5,7 +5,9 @@ import {useNavigate} from "react-router-dom"
 import picture from "../assets/outdoor.jpg"
 
 const LogIn = () => {
+
   const navigate = useNavigate();
+  // code to navigate onclick
   const toHome = (()=>{
     navigate("/Home")
   })

@@ -6,6 +6,7 @@ import picture from '../assets/dashboard-back.jpg'
 
 const Landing = () => {
     const navigate = useNavigate();
+    // On click function to navigate
     const toLogin =(()=>{
         navigate('/LogIn')
     })
