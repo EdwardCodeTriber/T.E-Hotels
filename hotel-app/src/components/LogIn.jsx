@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Box, Typography, Button, TextField, Avatar, Container } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {useNavigate} from "react-router-dom"
@@ -8,9 +8,19 @@ const LogIn = () => {
 
   const navigate = useNavigate();
   // code to navigate onclick
-  const toHome = (()=>{
-    navigate("/Home")
-  })
+  // const toHome = (()=>{
+  //   navigate("/Home")
+  // })
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogIn = () => {
+    if (email !== "" && password !== "") {
+      alert("Incorrect Credentials");
+      return;
+    }
+  }
+
   return (
     <div>
         <Box
@@ -51,6 +61,8 @@ const LogIn = () => {
           margin="normal"
           fullWidth
           label="Email"
+          value={email}
+            onChange={(e) => setEmail(e.target.value)}
           InputLabelProps={{
             style: { color: 'white' },
           }}
@@ -78,6 +90,8 @@ const LogIn = () => {
           fullWidth
           label="Password"
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputLabelProps={{
             style: { color: 'white' },
           }}
@@ -104,7 +118,8 @@ const LogIn = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2, backgroundColor: 'green' }}
-          onClick={toHome}
+          // onClick={toHome}
+          onClick={handleLogIn}
         >
           Sign In
         </Button>

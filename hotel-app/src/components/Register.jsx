@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom"
 import picture from "../assets/outdoor-1.jpg"
 import {
@@ -10,12 +10,29 @@ import {
   Container,
   Link,
 } from "@mui/material";
+import {auth} from '../firebase'
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Register = () => {
-  const navigate = useNavigate();
-  const toSignIn = (()=>{
-    navigate("/Login")
-  })
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  // const navigate = useNavigate();
+  // const toSignIn = (()=>{
+  //   navigate("/Login")
+  // })
+
+  
+
+  // handles inputs
+  const handleRegister = () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+  }
   return (
     <div>
       <Box
@@ -52,6 +69,8 @@ const Register = () => {
             margin="normal"
             fullWidth
             label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             InputLabelProps={{
               style: { color: "white" },
             }}
@@ -80,6 +99,8 @@ const Register = () => {
             margin="normal"
             fullWidth
             label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             InputLabelProps={{
               style: { color: "white" },
             }}
@@ -109,6 +130,8 @@ const Register = () => {
             fullWidth
             label="Password"
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputLabelProps={{
               style: { color: "white" },
             }}
@@ -138,6 +161,8 @@ const Register = () => {
             fullWidth
             label="Confirm Password"
             type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             InputLabelProps={{
               style: { color: "white" },
             }}
@@ -172,7 +197,8 @@ const Register = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2, backgroundColor: "green" }}
-            onClick={toSignIn}
+            // onClick={toSignIn}
+            onClick={handleRegister}
           >
             Register
           </Button>
