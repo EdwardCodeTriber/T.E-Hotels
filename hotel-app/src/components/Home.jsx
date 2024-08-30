@@ -19,7 +19,6 @@ import {
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import InfoIcon from "@mui/icons-material/Info";
 import picture from "../assets/outdoor-2.jpg";
 import picture1 from "../assets/room-1.jpg";
 import picture2 from "../assets/room-4.jpg";
