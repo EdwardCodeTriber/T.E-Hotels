@@ -16,6 +16,7 @@ import {
   CardActions,
   Dialog, DialogContent
 } from "@mui/material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import InfoIcon from "@mui/icons-material/Info";
@@ -71,7 +72,7 @@ const Home = () => {
               <FavoriteIcon />
             </IconButton>
             <IconButton color="inherit">
-              <InfoIcon />
+              <AccountCircleIcon />
             </IconButton>
           </Toolbar>
         </AppBar>

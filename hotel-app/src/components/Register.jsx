@@ -27,10 +27,23 @@ const Register = () => {
   
 
   // handles inputs
-  const handleRegister = () => {
+  const handleRegister = async (e) => {
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
+    }else if(password === confirmPassword){
+      e.preventDefault()
+      try {
+        await createUserWithEmailAndPassword(auth, email, password)
+        console.log("Account Created")
+      }
+      catch(err) {
+        console.log(err)
+      }
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   }
   return (
