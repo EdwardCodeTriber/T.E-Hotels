@@ -3,6 +3,8 @@ import { Box, Typography, Button, TextField, Avatar, Container } from '@mui/mate
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {useNavigate} from "react-router-dom"
 import picture from "../assets/outdoor.jpg"
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../Redux/userSlice';
 import {auth} from '../firebase'
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -16,17 +18,26 @@ const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // const dispatch = useDispatch();
+  // const { user, loading, error } = useSelector((state) => state.user);
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(loginUser({ email, password }));
+  // };
+
   const handleLogIn = async (e) => {
 
     e.preventDefault()
       try {
         await signInWithEmailAndPassword(auth, email, password)
         alert("Correct Credentials from Firebase");
-        console.log("Correct credentials")
+        // console.log("Correct credentials")
         navigate("/Home")
       }
       catch(err) {
         console.log(err)
+        alert("Wrong Credentials")
       }
     
     // if (email !== "" && password !== "") {

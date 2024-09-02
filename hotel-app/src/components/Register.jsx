@@ -11,7 +11,10 @@ import {
   Link,
 } from "@mui/material";
 import {auth} from '../firebase'
+import { useDispatch, useSelector } from 'react-redux';
+import {registerUser} from '../Redux/userSlice'
 import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 const Register = () => {
 
@@ -24,7 +27,13 @@ const Register = () => {
   //   navigate("/Login")
   // })
 
-  
+  // const dispatch = useDispatch();
+  // const { user, loading, error } = useSelector((state) => state.user);
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(registerUser({ name, email, password }));
+  // };
 
   // handles inputs
   const handleRegister = async (e) => {
@@ -35,7 +44,8 @@ const Register = () => {
       e.preventDefault()
       try {
         await createUserWithEmailAndPassword(auth, email, password)
-        console.log("Account Created")
+        // console.log("Account Created")
+        alert("Account Created Successfully")
       }
       catch(err) {
         console.log(err)
