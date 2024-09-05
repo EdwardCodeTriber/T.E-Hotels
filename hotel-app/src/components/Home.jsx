@@ -17,6 +17,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import picture from "../assets/outdoor-2.jpg";
@@ -25,7 +26,7 @@ import picture2 from "../assets/room-4.jpg";
 import picture3 from "../assets/view-room-6.jpg";
 import picture5 from "../assets/room-5.jpg";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../redux/authSlice";
+import { logoutUser } from "../Redux/authSlice";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -71,8 +72,11 @@ const Home = () => {
             <IconButton color="inherit">
               <FavoriteIcon />
             </IconButton>
-            <IconButton color="inherit" onClick={handleLogout}>
+            <IconButton color="inherit">
               <AccountCircleIcon />
+            </IconButton>
+            <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon/>
             </IconButton>
           </Toolbar>
         </AppBar>

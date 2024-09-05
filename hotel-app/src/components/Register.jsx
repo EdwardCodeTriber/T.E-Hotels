@@ -11,7 +11,7 @@ import {
   Link,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/authSlice";
+import { registerUser } from "../Redux/authSlice";
 
 const Register = () => {
   const [name, setName] = useState("");

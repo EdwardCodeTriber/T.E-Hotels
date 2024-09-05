@@ -1,4 +1,4 @@
-// src/components/LogIn.js
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import picture from "../assets/outdoor.jpg";
-import { loginUser } from "../redux/authSlice";
+import { loginUser } from "../Redux/authSlice";
 
 const LogIn = () => {
   const navigate = useNavigate();
