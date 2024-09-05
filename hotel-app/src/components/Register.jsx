@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import {useNavigate} from "react-router-dom"
-import picture from "../assets/outdoor-1.jpg"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import picture from "../assets/outdoor-1.jpg";
 import {
   Box,
   Typography,
@@ -10,52 +10,45 @@ import {
   Container,
   Link,
 } from "@mui/material";
-import {auth} from '../firebase'
-import { useDispatch, useSelector } from 'react-redux';
-import {registerUser} from '../Redux/userSlice'
-import { createUserWithEmailAndPassword } from "firebase/auth";
-
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../redux/authSlice";
 
 const Register = () => {
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   // const toSignIn = (()=>{
   //   navigate("/Login")
   // })
 
-  // const dispatch = useDispatch();
-  // const { user, loading, error } = useSelector((state) => state.user);
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   dispatch(registerUser({ name, email, password }));
-  // };
-
   // handles inputs
-  const handleRegister = async (e) => {
+  const handleRegister = (e) => {
+    e.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match");
-      return;
-    }else if(password === confirmPassword){
-      e.preventDefault()
-      try {
-        await createUserWithEmailAndPassword(auth, email, password)
-        // console.log("Account Created")
-        alert("Account Created Successfully")
-      }
-      catch(err) {
-        console.log(err)
-      }
-      setName("");
-      setEmail("");
       setPassword("");
       setConfirmPassword("");
+      return;
     }
-  }
+
+    // try {
+    //   await createUserWithEmailAndPassword(auth, email, password);
+    //   console.log("Account Created");
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    dispatch(registerUser({ email, password }));
+    alert("Account registerd")
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    navigate("/LogIn")
+  };
   return (
     <div>
       <Box
@@ -209,6 +202,7 @@ const Register = () => {
               },
             }}
           />
+          {error && <Typography color="error">{error}</Typography>}
           <Typography variant="body2" color="white" sx={{ mt: 2, mb: 2 }}>
             By clicking on Register You agree with our{" "}
             <Link href="#" underline="hover" color="primary">
@@ -220,29 +214,13 @@ const Register = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2, backgroundColor: "green" }}
-            // onClick={toSignIn}
             onClick={handleRegister}
+            disabled={loading}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </Button>
         </Container>
-        
       </Box>
-      {/* Footer */}
-      {/* <Box
-          sx={{
-            width: "100%",
-            position: "absolute",
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            padding: "10px 0",
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="body2" color="white">
-            © 2024 Thapelo Somo. All rights reserved.
-          </Typography>
-        </Box> */}
     </div>
   );
 };
