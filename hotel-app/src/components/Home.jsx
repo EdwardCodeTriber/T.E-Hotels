@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {useNavigate} from 'react-router-dom'
 import {
   Container,
   Box,
@@ -17,7 +18,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import picture from "../assets/outdoor-2.jpg";
@@ -25,13 +26,17 @@ import picture1 from "../assets/room-1.jpg";
 import picture2 from "../assets/room-4.jpg";
 import picture3 from "../assets/view-room-6.jpg";
 import picture5 from "../assets/room-5.jpg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../Redux/authSlice";
 
 const Home = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); 
+  const [accountOpen, setAccountOpen] = useState(false); 
   const [selectedRoom, setSelectedRoom] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const user = useSelector((state) => state.auth.user); 
 
   // Opens dialog after Book button click
   const handleClickOpen = (room) => {
@@ -44,10 +49,20 @@ const Home = () => {
     setSelectedRoom(null);
   };
 
+  // Opens account dialog when Account button is clicked
+  const handleAccountClickOpen = () => {
+    setAccountOpen(true);
+  };
+
+  const handleAccountClose = () => {
+    setAccountOpen(false);
+  };
+
   // Logout function
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
       alert("Logged out successfully");
+      navigate("/LogIn");
     });
   };
 
@@ -72,11 +87,11 @@ const Home = () => {
             <IconButton color="inherit">
               <FavoriteIcon />
             </IconButton>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={handleAccountClickOpen}>
               <AccountCircleIcon />
             </IconButton>
             <IconButton color="inherit" onClick={handleLogout}>
-            <LogoutIcon/>
+              <LogoutIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -131,9 +146,9 @@ const Home = () => {
               </Grid>
             ))}
           </Grid>
+          {/* Room Details Dialog */}
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
             <DialogContent>
-              {/* <NavbarRoom/> */}
               {selectedRoom && (
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
@@ -174,6 +189,19 @@ const Home = () => {
               )}
             </DialogContent>
           </Dialog>
+          {/* Account Info Dialog */}
+          <Dialog open={accountOpen} onClose={handleAccountClose} fullWidth maxWidth="xs">
+            <DialogContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>Account Information</Typography>
+              {user ? (
+                <Box>
+                  <Typography variant="body1">Email: {user.email}</Typography>
+                </Box>
+              ) : (
+                <Typography variant="body1">No user information available</Typography>
+              )}
+            </DialogContent>
+          </Dialog>
         </Container>
       </Box>
     </div>
@@ -188,7 +216,6 @@ const roomData = [
                    area with a stylish armchair, and a sleek work desk. The room is equipped
                    with a large flat-screen TV, a minibar, and a coffee maker for added convenience.`,
     image: `${picture1}`,
-    Review: "",
     price: "R 1 500",
   },
   {
@@ -199,7 +226,6 @@ const roomData = [
                   offering a stunning view of the city skyline. 
                   A sleek, modern desk provides ample workspace`,
     image: `${picture2}`,
-    Review: "",
     price: "R 1 500",
   },
   {
@@ -210,7 +236,6 @@ const roomData = [
                    offering a stunning view of the city skyline. A sleek,
                    modern desk provides ample workspace`,
     image: `${picture5}`,
-    Review: "",
     price: "R 1 500",
   },
   {
@@ -221,7 +246,6 @@ const roomData = [
                    offering a stunning view of the city skyline. A sleek,
                     modern desk provides ample workspace`,
     image: `${picture3}`,
-    Review: "",
     price: "R 1 500",
   },
 ];

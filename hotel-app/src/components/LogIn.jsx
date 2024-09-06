@@ -22,6 +22,8 @@ const LogIn = () => {
   const [password, setPassword] = useState("");
   const { loading, error } = useSelector((state) => state.auth);
 
+
+  // SignIn function
   const handleLogIn = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password })).then((result) => {
