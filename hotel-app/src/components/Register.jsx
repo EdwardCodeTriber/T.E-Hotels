@@ -9,6 +9,10 @@ import {
   Avatar,
   Container,
   Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../Redux/authSlice";
@@ -18,14 +22,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [termsOpen, setTermsOpen] = useState(false); 
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  // const toSignIn = (()=>{
-  //   navigate("/Login")
-  // })
 
-  // handles inputs
   const handleRegister = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -34,21 +35,23 @@ const Register = () => {
       setConfirmPassword("");
       return;
     }
-
-    // try {
-    //   await createUserWithEmailAndPassword(auth, email, password);
-    //   console.log("Account Created");
-    // } catch (err) {
-    //   console.log(err);
-    // }
     dispatch(registerUser({ email, password }));
-    alert("Account registerd")
+    alert("Account registered");
     setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-    navigate("/LogIn")
+    navigate("/LogIn");
   };
+
+  const handleTermsOpen = () => {
+    setTermsOpen(true);
+  };
+
+  const handleTermsClose = () => {
+    setTermsOpen(false);
+  };
+
   return (
     <div>
       <Box
@@ -97,14 +100,12 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -127,14 +128,12 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -158,14 +157,12 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -189,14 +186,12 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "white",
-                },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -205,7 +200,7 @@ const Register = () => {
           {error && <Typography color="error">{error}</Typography>}
           <Typography variant="body2" color="white" sx={{ mt: 2, mb: 2 }}>
             By clicking on Register You agree with our{" "}
-            <Link href="#" underline="hover" color="primary">
+            <Link href="#" underline="hover" color="primary" onClick={handleTermsOpen}>
               Terms & Conditions
             </Link>
           </Typography>
@@ -219,6 +214,28 @@ const Register = () => {
           >
             {loading ? "Registering..." : "Register"}
           </Button>
+
+          {/* Terms & Conditions Dialog */}
+          <Dialog open={termsOpen} onClose={handleTermsClose} fullWidth maxWidth="sm">
+            <DialogTitle>Terms & Conditions</DialogTitle>
+            <DialogContent>
+              <Typography variant="body2">
+                Your privacy is important to us. By using our services, you agree
+                to the collection and use of your data as outlined in our Privacy
+                Policy. We do not share your information with third parties
+                without consent.
+                <br />
+                <br />
+                Please read the full Terms and Conditions and Privacy Policy to
+                understand how we collect, use, and protect your information.
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleTermsClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </Box>
     </div>
