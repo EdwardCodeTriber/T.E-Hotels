@@ -9,7 +9,9 @@ export const fetchRooms = createAsyncThunk("rooms/fetchRooms", async () => {
   const rooms = roomSnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-  }));
+  }))
+  // filter room according to it's avalability
+  .filter((room) => room.availability === "Available"); 
   return rooms;
 });
 
