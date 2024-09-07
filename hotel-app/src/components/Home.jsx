@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Box,
@@ -28,15 +28,16 @@ import picture3 from "../assets/view-room-6.jpg";
 import picture5 from "../assets/room-5.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../Redux/authSlice";
+import RoomList from "./RoomList";
 
 const Home = () => {
-  const [open, setOpen] = useState(false); 
-  const [accountOpen, setAccountOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.auth.user); 
+  const user = useSelector((state) => state.auth.user);
 
   // Opens dialog after Book button click
   const handleClickOpen = (room) => {
@@ -108,11 +109,15 @@ const Home = () => {
           </Box>
 
           <Box textAlign="center" sx={{ mb: 4 }}>
-            <Typography variant="h4">Book a beautiful room to live in</Typography>
+            <Typography variant="h4">
+              Book a beautiful room to live in
+            </Typography>
             <Typography variant="h6">
               Find a source you want to spend time in
             </Typography>
           </Box>
+          {/* Use RoomList component to display rooms */}
+          <RoomList />
           <Grid container spacing={4}>
             {roomData.map((room) => (
               <Grid item xs={12} md={6} lg={4} key={room.title}>
@@ -190,15 +195,24 @@ const Home = () => {
             </DialogContent>
           </Dialog>
           {/* Account Info Dialog */}
-          <Dialog open={accountOpen} onClose={handleAccountClose} fullWidth maxWidth="xs">
+          <Dialog
+            open={accountOpen}
+            onClose={handleAccountClose}
+            fullWidth
+            maxWidth="xs"
+          >
             <DialogContent>
-              <Typography variant="h6" sx={{ mb: 2 }}>Account Information</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Account Information
+              </Typography>
               {user ? (
                 <Box>
                   <Typography variant="body1">Email: {user.email}</Typography>
                 </Box>
               ) : (
-                <Typography variant="body1">No user information available</Typography>
+                <Typography variant="body1">
+                  No user information available
+                </Typography>
               )}
             </DialogContent>
           </Dialog>

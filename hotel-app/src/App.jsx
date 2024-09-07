@@ -3,7 +3,8 @@ import Landing from './components/Landing'
 import LogIn from './components/LogIn'
 import Register from './components/Register'
 import Home from './components/Home'
-// import HotelRoomPopup from './components/HotelRoomPopup'
+import RoomList from './components/RoomList'
+
 
 function App() {
 
@@ -15,7 +16,8 @@ function App() {
       <Route path='/LogIn' element={<LogIn/>}/>
       <Route path='/Register' element={<Register/>}/>
       <Route path='/Home' element={<Home/>}/>
-      {/* <Route path='/HotelRoomPopup' element={<HotelRoomPopup/>}/> */}
+      <Route path="/RoomList" element={<RoomList/>}/>
+      
 
     </Routes>
     </BrowserRouter>
