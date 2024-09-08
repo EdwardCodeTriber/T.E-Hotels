@@ -39,16 +39,7 @@ const Home = () => {
 
   const user = useSelector((state) => state.auth.user);
 
-  // Opens dialog after Book button click
-  const handleClickOpen = (room) => {
-    setSelectedRoom(room);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedRoom(null);
-  };
+  
 
   // Opens account dialog when Account button is clicked
   const handleAccountClickOpen = () => {
@@ -118,82 +109,8 @@ const Home = () => {
           </Box>
           {/* Use RoomList component to display rooms */}
           <RoomList />
-          <Grid container spacing={4}>
-            {roomData.map((room) => (
-              <Grid item xs={12} md={6} lg={4} key={room.title}>
-                <Card
-                  sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={room.image}
-                    alt={room.title}
-                  />
-                  <CardContent>
-                    <Typography variant="h6">{room.title}</Typography>
-                    {/* Replace with rating component */}
-                    <Typography>⭐⭐</Typography>
-                  </CardContent>
-                  <CardActions
-                    sx={{ display: "flex", justifyContent: "flex-end" }}
-                  >
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleClickOpen(room)}
-                    >
-                      View
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          {/* Room Details Dialog */}
-          <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-            <DialogContent>
-              {selectedRoom && (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
-                    <Card>
-                      <CardMedia
-                        component="img"
-                        alt={selectedRoom.title}
-                        height="300"
-                        image={selectedRoom.image}
-                      />
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CardContent>
-                      <Typography variant="h5" component="div">
-                        {selectedRoom.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        paragraph
-                      >
-                        {selectedRoom.description}
-                      </Typography>
-                      <Typography variant="h6" component="div">
-                        {selectedRoom.price}
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleClose}
-                      >
-                        Book
-                      </Button>
-                    </CardContent>
-                  </Grid>
-                </Grid>
-              )}
-            </DialogContent>
-          </Dialog>
+          
+          
           {/* Account Info Dialog */}
           <Dialog
             open={accountOpen}
@@ -222,46 +139,6 @@ const Home = () => {
   );
 };
 
-const roomData = [
-  {
-    title: "Closed View Room",
-    description: `Single bed room is a modern, elegantly designed space 
-                   featuring a plush king-size bed with high-quality linens, a cozy seating
-                   area with a stylish armchair, and a sleek work desk. The room is equipped
-                   with a large flat-screen TV, a minibar, and a coffee maker for added convenience.`,
-    image: `${picture1}`,
-    price: "R 1 500",
-  },
-  {
-    title: "Outside View Room",
-    description: `The dual bed room is a cozy yet spacious haven, 
-                  featuring a king-sized bed with plush linens and pillows. 
-                  Large windows allow natural light to flood the room, 
-                  offering a stunning view of the city skyline. 
-                  A sleek, modern desk provides ample workspace`,
-    image: `${picture2}`,
-    price: "R 1 500",
-  },
-  {
-    title: "Top Garden Room",
-    description: `The hotel room is a cozy yet spacious haven, 
-                   featuring a king-sized bed with plush linens and pillows. 
-                   Large windows allow natural light to flood the room, 
-                   offering a stunning view of the city skyline. A sleek,
-                   modern desk provides ample workspace`,
-    image: `${picture5}`,
-    price: "R 1 500",
-  },
-  {
-    title: "Full 180° View Room",
-    description: `The hotel room is a cozy yet spacious haven, 
-                   featuring a king-sized bed with plush linens and pillows. 
-                   Large windows allow natural light to flood the room, 
-                   offering a stunning view of the city skyline. A sleek,
-                    modern desk provides ample workspace`,
-    image: `${picture3}`,
-    price: "R 1 500",
-  },
-];
+
 
 export default Home;
