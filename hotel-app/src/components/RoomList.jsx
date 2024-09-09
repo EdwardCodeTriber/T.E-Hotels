@@ -14,9 +14,11 @@ import {
   DialogContent,
   TextField,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const RoomList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const { rooms, loading, error } = useSelector((state) => state.rooms);
   const { user } = useSelector((state) => state.auth);
 
@@ -30,6 +32,14 @@ const RoomList = () => {
   }, [dispatch]);
 
   const handleClickOpen = (room) => {
+    // Check if the user is logged in
+    if (!user) {
+      alert("You need to be logged in to book a room");
+      // Redirect to login page if not logged in
+      navigate("/login"); 
+      return;
+    }
+
     setSelectedRoom(room);
     setOpen(true);
   };
@@ -53,7 +63,7 @@ const RoomList = () => {
         price: selectedRoom.price,
         checkInDate,
         checkOutDate,
-        status:"Pending",
+        status: "Pending",
         picture: selectedRoom.imageBase64,
       })
     ).then(() => {
