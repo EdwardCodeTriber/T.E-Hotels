@@ -21,6 +21,7 @@ import picture from "../assets/outdoor-2.jpg";
 import RoomList from "./RoomList";
 import UserBookings from "./UserBookings";  
 import { logoutUser, fetchUser } from "../Redux/authSlice"; 
+import Footer from './Footer';
 
 const Home = () => {
   const [accountOpen, setAccountOpen] = useState(false);
@@ -128,6 +129,8 @@ const Home = () => {
             </DialogContent>
           </Dialog>
         </Container>
+        {/* Add Footer here */}
+        <Footer />
       </Box>
     </div>
   );
