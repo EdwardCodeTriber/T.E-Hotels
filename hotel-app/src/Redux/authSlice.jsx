@@ -20,6 +20,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+
 // Async action to handle user login
 export const loginUser = createAsyncThunk(
   "auth/loginUser",

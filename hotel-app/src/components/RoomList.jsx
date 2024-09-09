@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRooms } from "../Redux/roomSlice";
+import { saveBooking } from "../Redux/bookingSlice";
 import {
   Grid,
   Card,
@@ -11,17 +12,21 @@ import {
   Typography,
   Dialog,
   DialogContent,
+  TextField,
 } from "@mui/material";
 
 const RoomList = () => {
   const dispatch = useDispatch();
   const { rooms, loading, error } = useSelector((state) => state.rooms);
-  
-  const [open, setOpen] = React.useState(false);
-  const [selectedRoom, setSelectedRoom] = React.useState(null);
+  const { user } = useSelector((state) => state.auth);
+
+  const [open, setOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
 
   useEffect(() => {
-    dispatch(fetchRooms()); 
+    dispatch(fetchRooms());
   }, [dispatch]);
 
   const handleClickOpen = (room) => {
@@ -32,6 +37,30 @@ const RoomList = () => {
   const handleClose = () => {
     setOpen(false);
     setSelectedRoom(null);
+  };
+
+  const handleBooking = () => {
+    if (!checkInDate || !checkOutDate) {
+      alert("Please select check-in and check-out dates");
+      return;
+    }
+
+    // Save the booking using Redux action
+    dispatch(
+      saveBooking({
+        roomId: selectedRoom.id,
+        roomType: selectedRoom.roomType,
+        price: selectedRoom.price,
+        checkInDate,
+        checkOutDate,
+        status:"Pending"
+      })
+    ).then(() => {
+      alert("Room booked successfully!");
+      setCheckInDate("");
+      setCheckOutDate("");
+      handleClose();
+    });
   };
 
   if (loading) return <Typography>Loading...</Typography>;
@@ -56,11 +85,11 @@ const RoomList = () => {
                 <Typography>Capacity: {room.capacity}</Typography>
               </CardContent>
               <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button     
+                <Button
                   variant="contained"
                   onClick={() => handleClickOpen(room)}
                 >
-                  View
+                  View & Book
                 </Button>
               </CardActions>
             </Card>
@@ -81,6 +110,32 @@ const RoomList = () => {
               <Typography>{selectedRoom.description}</Typography>
               <Typography>Price: R{selectedRoom.price}</Typography>
               <Typography>Capacity: {selectedRoom.capacity}</Typography>
+
+              <TextField
+                label="Check-In Date"
+                type="date"
+                fullWidth
+                value={checkInDate}
+                onChange={(e) => setCheckInDate(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+              <TextField
+                label="Check-Out Date"
+                type="date"
+                fullWidth
+                value={checkOutDate}
+                onChange={(e) => setCheckOutDate(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleBooking}
+                sx={{ mt: 3 }}
+              >
+                Book Now
+              </Button>
             </div>
           )}
         </DialogContent>

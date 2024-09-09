@@ -9,11 +9,6 @@ import {
   Button,
   IconButton,
   TextField,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
   Dialog,
   DialogContent,
 } from "@mui/material";
@@ -22,18 +17,14 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import picture from "../assets/outdoor-2.jpg";
-import picture1 from "../assets/room-1.jpg";
-import picture2 from "../assets/room-4.jpg";
-import picture3 from "../assets/view-room-6.jpg";
-import picture5 from "../assets/room-5.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../Redux/authSlice";
 import RoomList from "./RoomList";
+import UserBookings from "./UserBookings";
 
 const Home = () => {
-  const [open, setOpen] = useState(false);
+  
   const [accountOpen, setAccountOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -110,6 +101,7 @@ const Home = () => {
           {/* Use RoomList component to display rooms */}
           <RoomList />
           
+          <UserBookings/>
           
           {/* Account Info Dialog */}
           <Dialog
