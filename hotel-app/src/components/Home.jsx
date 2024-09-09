@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -18,19 +18,21 @@ import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import picture from "../assets/outdoor-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../Redux/authSlice";
+import { logoutUser, fetchUser } from "../Redux/authSlice"; 
 import RoomList from "./RoomList";
 import UserBookings from "./UserBookings";
 
 const Home = () => {
-  
   const [accountOpen, setAccountOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
 
-  
+  // Fetch user on initial render
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   // Opens account dialog when Account button is clicked
   const handleAccountClickOpen = () => {
@@ -101,7 +103,7 @@ const Home = () => {
           {/* Use RoomList component to display rooms */}
           <RoomList />
           
-          <UserBookings/>
+          <UserBookings />
           
           {/* Account Info Dialog */}
           <Dialog
@@ -130,7 +132,5 @@ const Home = () => {
     </div>
   );
 };
-
-
 
 export default Home;
