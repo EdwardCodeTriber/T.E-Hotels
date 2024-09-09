@@ -53,7 +53,8 @@ const RoomList = () => {
         price: selectedRoom.price,
         checkInDate,
         checkOutDate,
-        status:"Pending"
+        status:"Pending",
+        picture: selectedRoom.imageBase64,
       })
     ).then(() => {
       alert("Room booked successfully!");

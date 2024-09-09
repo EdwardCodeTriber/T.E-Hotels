@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
   Box,
@@ -17,24 +18,21 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import picture from "../assets/outdoor-2.jpg";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser, fetchUser } from "../Redux/authSlice"; 
 import RoomList from "./RoomList";
-import UserBookings from "./UserBookings";
+import UserBookings from "./UserBookings";  
+import { logoutUser, fetchUser } from "../Redux/authSlice"; 
 
 const Home = () => {
   const [accountOpen, setAccountOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   const user = useSelector((state) => state.auth.user);
 
-  // Fetch user on initial render
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  // Opens account dialog when Account button is clicked
   const handleAccountClickOpen = () => {
     setAccountOpen(true);
   };
@@ -43,7 +41,6 @@ const Home = () => {
     setAccountOpen(false);
   };
 
-  // Logout function
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
       alert("Logged out successfully");
@@ -100,11 +97,14 @@ const Home = () => {
               Find a source you want to spend time in
             </Typography>
           </Box>
+
           {/* Use RoomList component to display rooms */}
           <RoomList />
-          
+
+          <br/>
+          {/* Display user bookings */}
           <UserBookings />
-          
+
           {/* Account Info Dialog */}
           <Dialog
             open={accountOpen}

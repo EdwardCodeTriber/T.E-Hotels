@@ -4,7 +4,7 @@ import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 // Thunk to save booking to Firebase
 export const saveBooking = createAsyncThunk(
-  "booking/saveBooking",
+  "bookings/saveBooking",
   async (bookingData, { getState }) => {
     // Get logged-in user from state
     const { auth } = getState(); 
@@ -25,7 +25,7 @@ export const saveBooking = createAsyncThunk(
 
 // Thunk to fetch bookings for the logged-in user
 export const fetchUserBookings = createAsyncThunk(
-  "booking/fetchUserBookings",
+  "bookings/fetchUserBookings",
   async (_, { getState }) => {
     const { auth } = getState();
     const user = auth.user;
