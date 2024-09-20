@@ -13,6 +13,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../Redux/authSlice";
@@ -22,7 +25,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [termsOpen, setTermsOpen] = useState(false); 
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity
+
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -30,18 +37,39 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setSnackbarMessage("Passwords do not match");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       setPassword("");
       setConfirmPassword("");
       return;
     }
-    dispatch(registerUser({ email, password }));
-    alert("Account registered");
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    navigate("/LogIn");
+
+    // Dispatch registration and add delay
+    dispatch(registerUser({ email, password })).then((result) => {
+      setTimeout(() => {
+        if (result.meta.requestStatus === "fulfilled") {
+          setSnackbarMessage("Account registered successfully");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
+
+          // After the delay, navigate to the login page
+          setTimeout(() => {
+            navigate("/LogIn");
+          }, 2500);
+        } else {
+          setSnackbarMessage("Registration failed: " + result.payload);
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+        }
+
+        // Clear form fields
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }, 2500); // 2.5-second delay for loader visibility
+    });
   };
 
   const handleTermsOpen = () => {
@@ -50,6 +78,10 @@ const Register = () => {
 
   const handleTermsClose = () => {
     setTermsOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -100,12 +132,14 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -128,12 +162,14 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -157,12 +193,14 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -186,12 +224,14 @@ const Register = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -200,30 +240,45 @@ const Register = () => {
           {error && <Typography color="error">{error}</Typography>}
           <Typography variant="body2" color="white" sx={{ mt: 2, mb: 2 }}>
             By clicking on Register You agree with our{" "}
-            <Link href="#" underline="hover" color="primary" onClick={handleTermsOpen}>
+            <Link
+              href="#"
+              underline="hover"
+              color="primary"
+              onClick={handleTermsOpen}
+            >
               Terms & Conditions
             </Link>
           </Typography>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, backgroundColor: "green" }}
-            onClick={handleRegister}
-            disabled={loading}
-          >
-            {loading ? "Registering..." : "Register"}
-          </Button>
+
+          {/* Conditional rendering of loader */}
+          {loading ? (
+            <CircularProgress sx={{ color: "white", mt: 2 }} />
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 2, backgroundColor: "green" }}
+              onClick={handleRegister}
+            >
+              Register
+            </Button>
+          )}
 
           {/* Terms & Conditions Dialog */}
-          <Dialog open={termsOpen} onClose={handleTermsClose} fullWidth maxWidth="sm">
+          <Dialog
+            open={termsOpen}
+            onClose={handleTermsClose}
+            fullWidth
+            maxWidth="sm"
+          >
             <DialogTitle>Terms & Conditions</DialogTitle>
             <DialogContent>
               <Typography variant="body2">
-                Your privacy is important to us. By using our services, you agree
-                to the collection and use of your data as outlined in our Privacy
-                Policy. We do not share your information with third parties
-                without consent.
+                Your privacy is important to us. By using our services, you
+                agree to the collection and use of your data as outlined in our
+                Privacy Policy. We do not share your information with third
+                parties without consent.
                 <br />
                 <br />
                 Please read the full Terms and Conditions and Privacy Policy to
@@ -236,6 +291,22 @@ const Register = () => {
               </Button>
             </DialogActions>
           </Dialog>
+
+          {/* Snackbar */}
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={4000}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <Alert
+              onClose={handleSnackbarClose}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
         </Container>
       </Box>
     </div>
