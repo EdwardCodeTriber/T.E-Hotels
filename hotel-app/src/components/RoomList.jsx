@@ -13,6 +13,9 @@ import {
   Dialog,
   DialogContent,
   TextField,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +30,10 @@ const RoomList = () => {
   const [checkInDate, setCheckInDate] = useState("");
   const [checkOutDate, setCheckOutDate] = useState("");
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   useEffect(() => {
     dispatch(fetchRooms());
   }, [dispatch]);
@@ -34,7 +41,9 @@ const RoomList = () => {
   const handleClickOpen = (room) => {
     // Check if the user is logged in
     if (!user) {
-      alert("You need to be logged in to book a room");
+      setSnackbarMessage("You need to be logged in to book a room");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       // Redirect to login page if not logged in
       navigate("/login"); 
       return;
@@ -51,7 +60,9 @@ const RoomList = () => {
 
   const handleBooking = () => {
     if (!checkInDate || !checkOutDate) {
-      alert("Please select check-in and check-out dates");
+      setSnackbarMessage("Please select check-in and check-out dates");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       return;
     }
 
@@ -67,15 +78,20 @@ const RoomList = () => {
         picture: selectedRoom.imageBase64,
       })
     ).then(() => {
-      alert("Room booked successfully!");
+      setSnackbarMessage("Room booked successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
       setCheckInDate("");
       setCheckOutDate("");
       handleClose();
     });
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
-  if (error) return <Typography>Error: {error}</Typography>;
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  if (loading) return <CircularProgress />;
 
   return (
     <div>
@@ -99,6 +115,7 @@ const RoomList = () => {
                 <Button
                   variant="contained"
                   onClick={() => handleClickOpen(room)}
+                  sx={{backgroundColor:"#115e59"}}
                 >
                   View & Book
                 </Button>
@@ -151,6 +168,18 @@ const RoomList = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Snackbar for alerts */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

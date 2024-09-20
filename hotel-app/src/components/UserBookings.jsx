@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, Grid, Card, CardContent, CardMedia, Button } from "@mui/material";
+import { Typography, Grid, Card, CardContent, CardMedia, CardActions, Button } from "@mui/material";
 import { processPayment } from "../Redux/bookedSlice";  
 
 const UserBookings = () => {
@@ -25,10 +25,11 @@ const UserBookings = () => {
       <Typography variant="h4" gutterBottom>
         Your Bookings
       </Typography>
+
       <Grid container spacing={4}>
         {bookings.map((booking) => (
           <Grid item xs={12} md={6} lg={4} key={booking.id}>
-            <Card>
+            <Card sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}>
               {booking.picture && (
                 <CardMedia
                   component="img"
@@ -45,20 +46,24 @@ const UserBookings = () => {
                 <Typography>Status: {booking.status}</Typography>
 
                 {booking.status !== "booked" && (
-                  <Button
+                  <CardActions sx={{display:'flex', justifyContent:"flex-end"}}>
+                    <Button
                     variant="contained"
                     color="primary"
                     onClick={() => handlePayment(booking)}
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2,backgroundColor:'#6d28d9' }}
                   >
                     Pay Now
                   </Button>
+                  </CardActions>
+                  
                 )}
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+      <br/>
       {bookings.length === 0 && (
         <Typography>No bookings found. You haven't booked any rooms yet.</Typography>
       )}

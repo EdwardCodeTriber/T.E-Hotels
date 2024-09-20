@@ -26,9 +26,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [termsOpen, setTermsOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity
+  const [snackbarOpen, setSnackbarOpen] = useState(false); 
+  const [snackbarMessage, setSnackbarMessage] = useState(""); 
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); 
 
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
@@ -237,7 +237,7 @@ const Register = () => {
               },
             }}
           />
-          {error && <Typography color="error">{error}</Typography>}
+          {/* {error && <Typography color="error">{error}</Typography>} */}
           <Typography variant="body2" color="white" sx={{ mt: 2, mb: 2 }}>
             By clicking on Register You agree with our{" "}
             <Link

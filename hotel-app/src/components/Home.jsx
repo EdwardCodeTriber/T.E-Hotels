@@ -12,6 +12,10 @@ import {
   TextField,
   Dialog,
   DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -25,6 +29,12 @@ import Footer from './Footer';
 
 const Home = () => {
   const [accountOpen, setAccountOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [loadingLogout, setLoadingLogout] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
@@ -43,10 +53,26 @@ const Home = () => {
   };
 
   const handleLogout = () => {
+    setLoadingLogout(true);
     dispatch(logoutUser()).then(() => {
-      alert("Logged out successfully");
-      navigate("/LogIn");
+      setTimeout(() => {
+        setSnackbarMessage("Logged out successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        setLogoutDialogOpen(true); // Open logout confirmation dialog
+      }, 1500); // 1.5 seconds delay for logout
+    }).finally(() => {
+      setLoadingLogout(false);
     });
+  };
+
+  const handleLogoutConfirm = () => {
+    setLogoutDialogOpen(false);
+    navigate("/LogIn");
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -59,7 +85,7 @@ const Home = () => {
           height: "100%",
         }}
       >
-        <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
+        <AppBar position="static" sx={{ backgroundColor: "#172554" }}>
           <Toolbar>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               T.E. Hotels
@@ -73,8 +99,8 @@ const Home = () => {
             <IconButton color="inherit" onClick={handleAccountClickOpen}>
               <AccountCircleIcon />
             </IconButton>
-            <IconButton color="inherit" onClick={handleLogout}>
-              <LogoutIcon />
+            <IconButton color="inherit" onClick={handleLogout} disabled={loadingLogout}>
+              {loadingLogout ? <CircularProgress size={24} color="inherit" /> : <LogoutIcon />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -128,7 +154,35 @@ const Home = () => {
               )}
             </DialogContent>
           </Dialog>
+
+          {/* Logout Confirmation Dialog */}
+          <Dialog
+            open={logoutDialogOpen}
+            onClose={() => setLogoutDialogOpen(false)}
+          >
+            <DialogContent>
+              <Typography variant="h6">You have logged out successfully!</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleLogoutConfirm} color="primary">
+                Go to Login
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
+        
+        {/* Snackbar for alerts */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+
         {/* Add Footer here */}
         <Footer />
       </Box>
