@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -8,6 +7,9 @@ import {
   TextField,
   Avatar,
   Container,
+  CircularProgress,
+  Snackbar, // Import Snackbar for notifications
+  Alert,    // Import Alert for displaying messages
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,18 +21,29 @@ const LogIn = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.auth); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(""); 
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+  // Handle Snackbar close
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   // SignIn function
   const handleLogIn = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password })).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        alert("Logged in successfully");
+        setSnackbarMessage("Logged in successfully");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
         navigate("/Home");
       } else if (result.meta.requestStatus === "rejected") {
-        alert("Login failed");
+        setSnackbarMessage("Login failed: " + result.payload);
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
       }
     });
   };
@@ -124,22 +137,45 @@ const LogIn = () => {
             }}
           />
           <Typography variant="body2" color="white" sx={{ mt: 2, mb: 2 }}>
-            Don't have an account{" "}
-            <Link to='/Register' underline="hover" color="primary">
+            Don't have an account?{" "}
+            <Link to="/Register" underline="hover" color="primary">
               Register
             </Link>
           </Typography>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2, backgroundColor: "green" }}
-            onClick={handleLogIn}
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Sign In"}
-          </Button>
+
+          {/* Conditional rendering of loader */}
+          {loading ? (
+            <CircularProgress sx={{ color: "white", mt: 3, mb: 2 }} />
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, backgroundColor: "green" }}
+              onClick={handleLogIn}
+            >
+              Sign In
+            </Button>
+          )}
+
+          {/* Error Message */}
           {error && <Typography color="error">{error}</Typography>}
+
+          {/* Snackbar for Success/Error messages */}
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={4000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
         </Container>
       </Box>
     </div>
