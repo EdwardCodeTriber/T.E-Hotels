@@ -8,8 +8,8 @@ import {
   Avatar,
   Container,
   CircularProgress,
-  Snackbar, // Import Snackbar for notifications
-  Alert,    // Import Alert for displaying messages
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,9 +21,9 @@ const LogIn = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, error } = useSelector((state) => state.auth); 
+  const { loading, error } = useSelector((state) => state.auth);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(""); 
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   // Handle Snackbar close
@@ -34,17 +34,25 @@ const LogIn = () => {
   // SignIn function
   const handleLogIn = (e) => {
     e.preventDefault();
+
     dispatch(loginUser({ email, password })).then((result) => {
-      if (result.meta.requestStatus === "fulfilled") {
-        setSnackbarMessage("Logged in successfully");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        navigate("/Home");
-      } else if (result.meta.requestStatus === "rejected") {
-        setSnackbarMessage("Login failed: " + result.payload);
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
-      }
+      // Introduce a 2.5 second delay for loader visibility
+      setTimeout(() => {
+        if (result.meta.requestStatus === "fulfilled") {
+          setSnackbarMessage("Logged in successfully");
+          setSnackbarSeverity("success");
+          setOpenSnackbar(true);
+
+          // After 2.5 seconds, navigate to Home page
+          setTimeout(() => {
+            navigate("/Home");
+          }, 2500);
+        } else if (result.meta.requestStatus === "rejected") {
+          setSnackbarMessage("Login failed: " + result.payload);
+          setSnackbarSeverity("error");
+          setOpenSnackbar(true);
+        }
+      }, 2500); // Delay the loader by 2.5 seconds
     });
   };
 
@@ -96,12 +104,14 @@ const LogIn = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
@@ -125,12 +135,14 @@ const LogIn = () => {
               "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
                 borderColor: "white",
               },
-              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
+              "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
               "& .MuiInputBase-input": {
                 color: "white",
               },
