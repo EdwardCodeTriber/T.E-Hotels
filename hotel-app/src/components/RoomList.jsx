@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 const RoomList = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const { rooms, loading } = useSelector((state) => state.rooms);
   const { user } = useSelector((state) => state.auth);
 
@@ -45,7 +45,7 @@ const RoomList = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
       // Redirect to login page if not logged in
-      navigate("/login"); 
+      navigate("/login");
       return;
     }
 
@@ -75,7 +75,7 @@ const RoomList = () => {
         checkInDate,
         checkOutDate,
         status: "Pending",
-        paid:"Not yet",
+        paid: "Not yet",
         picture: selectedRoom.imageBase64,
       })
     ).then(() => {
@@ -99,7 +99,9 @@ const RoomList = () => {
       <Grid container spacing={4}>
         {rooms.map((room) => (
           <Grid item xs={12} md={6} lg={4} key={room.id}>
-            <Card sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}>
+            <Card
+              sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}
+            >
               <CardMedia
                 component="img"
                 height="140"
@@ -116,7 +118,7 @@ const RoomList = () => {
                 <Button
                   variant="contained"
                   onClick={() => handleClickOpen(room)}
-                  sx={{backgroundColor:"#115e59"}}
+                  sx={{ backgroundColor: "#115e59" }}
                 >
                   View & Book
                 </Button>
@@ -127,7 +129,7 @@ const RoomList = () => {
       </Grid>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
+        <DialogContent >
           {selectedRoom && (
             <div>
               <img
@@ -137,11 +139,11 @@ const RoomList = () => {
               />
               <Typography variant="h5">{selectedRoom.roomType}</Typography>
               <Typography>{selectedRoom.description}</Typography>
-              <Typography>Price: R{selectedRoom.price}</Typography>
+              <Typography>Price: R{selectedRoom.price} per Stay/night</Typography>
               <Typography>Capacity: {selectedRoom.capacity}</Typography>
 
               <TextField
-                label="Check-In Date"
+                // label="Check-In Date"
                 type="date"
                 fullWidth
                 value={checkInDate}
@@ -149,22 +151,28 @@ const RoomList = () => {
                 sx={{ mt: 2 }}
               />
               <TextField
-                label="Check-Out Date"
+                // label="Check-Out Date"
                 type="date"
                 fullWidth
                 value={checkOutDate}
                 onChange={(e) => setCheckOutDate(e.target.value)}
                 sx={{ mt: 2 }}
               />
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleBooking}
-                sx={{ mt: 3 }}
+              <CardActions
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
               >
-                Book Now
-              </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleBooking}
+                  sx={{ mt: 3, backgroundColor: "#4d7c0f" }}
+                >
+                  Book Now
+                </Button>
+              </CardActions>
             </div>
           )}
         </DialogContent>
@@ -177,7 +185,11 @@ const RoomList = () => {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

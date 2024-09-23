@@ -11,7 +11,6 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-// import { fetchPendingBookings } from "../Redux/bookedSlice";
 import {fetchUserBookings} from "../Redux/bookingSlice"
 
 const UserBookings = () => {

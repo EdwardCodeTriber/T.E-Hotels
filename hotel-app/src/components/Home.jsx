@@ -118,7 +118,7 @@ const Home = () => {
 
           <Box textAlign="center" sx={{ mb: 4 }}>
             <Typography variant="h4">
-              Book a beautiful room to live in
+              Book a beautiful Accomodation to live in
             </Typography>
             <Typography variant="h6">
               Find a source you want to spend time in
