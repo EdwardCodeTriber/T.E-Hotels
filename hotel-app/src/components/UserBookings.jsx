@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Typography,
@@ -15,6 +16,7 @@ import {fetchUserBookings} from "../Redux/bookingSlice"
 
 const UserBookings = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { bookings, loading, error } = useSelector((state) => state.bookings);
   const user = useSelector((state) => state.auth.user);
 
@@ -25,6 +27,10 @@ const UserBookings = () => {
       dispatch(fetchUserBookings());
     }
   }, [dispatch, user]);
+
+  const handlePay = (bookingId, price) => {
+    navigate(`/payment/${bookingId}/${price}`);
+  };
 
   if (loading) {
     return (
@@ -42,6 +48,8 @@ const UserBookings = () => {
   if (error) {
     return <Typography>Error: {error}</Typography>;
   }
+
+
 
   return (
     <div>
