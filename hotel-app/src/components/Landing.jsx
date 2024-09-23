@@ -14,7 +14,7 @@ const Landing = () => {
         navigate("/Home");
     })
   return (
-    // <div style={{}}>
+    
        <Box
       sx={{
         backgroundImage: `url(${picture})`,
@@ -50,10 +50,10 @@ const Landing = () => {
           </Typography>
         </Box>
         <Box sx={{ mb: 4 }}>
-          <Button variant="contained" color="primary" sx={{ mr: 2 }} onClick={toLogin}>
+          <Button variant="contained"  sx={{ mr: 2, backgroundColor:'#4b5563' }} onClick={toLogin}>
             Sign In
           </Button>
-          <Button variant="contained" color="secondary" onClick={toHome}>
+          <Button variant="contained" sx={{backgroundColor:'#1e293b'}} onClick={toHome}>
             View Rooms
           </Button>
         </Box>

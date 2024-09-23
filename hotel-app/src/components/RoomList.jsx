@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 const RoomList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
-  const { rooms, loading, error } = useSelector((state) => state.rooms);
+  const { rooms, loading } = useSelector((state) => state.rooms);
   const { user } = useSelector((state) => state.auth);
 
   const [open, setOpen] = useState(false);
@@ -75,6 +75,7 @@ const RoomList = () => {
         checkInDate,
         checkOutDate,
         status: "Pending",
+        paid:"Not yet",
         picture: selectedRoom.imageBase64,
       })
     ).then(() => {
