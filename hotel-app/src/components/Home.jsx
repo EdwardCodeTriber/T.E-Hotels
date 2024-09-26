@@ -59,7 +59,8 @@ const Home = () => {
         setSnackbarMessage("Logged out successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        setLogoutDialogOpen(true); // Open logout confirmation dialog
+        // Open logout confirmation dialog
+        setLogoutDialogOpen(true); 
       }, 1500); // 1.5 seconds delay for logout
     }).finally(() => {
       setLoadingLogout(false);
@@ -118,7 +119,7 @@ const Home = () => {
 
           <Box textAlign="center" sx={{ mb: 4 }}>
             <Typography variant="h4">
-              Book a beautiful Accomodation to live in
+              Book a beautiful Accommodation to live in
             </Typography>
             <Typography variant="h6">
               Find a source you want to spend time in

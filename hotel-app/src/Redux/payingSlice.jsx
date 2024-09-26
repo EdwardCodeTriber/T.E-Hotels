@@ -1,54 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import firebase from "../Firebase/firebase"; 
-import { db } from "../Firebase/firebase"; 
+import { getFunctions, httpsCallable } from "firebase/functions"; 
 
-// Async Thunk for fetching user bookings
-export const fetchUserBookings = createAsyncThunk(
-  "paying/fetchUserBookings",
-  async (_, { getState }) => {
-    const { auth } = getState();
-    // Fetch from Firestore
-    const bookings = []; 
-    const querySnapshot = await db.collection('bookings').where('userId', '==', auth.user.uid).get();
-    querySnapshot.forEach((doc) => {
-      bookings.push({ id: doc.id, ...doc.data() });
-    });
-    return bookings;
-  }
-);
-
-// Async Thunk to initiate payment
+// Async Thunk to initiate payment using Firebase Function
 export const initiatePayment = createAsyncThunk(
   "paying/initiatePayment",
-  async ({ bookingId, paymentMethodId, amount }, { getState }) => {
-    const { auth } = getState();
+  async ({ bookingId, paymentMethodId, amount }, { rejectWithValue }) => {
+    const functions = getFunctions();
+    const createPaymentIntent = httpsCallable(functions, "createPaymentIntent");
 
-    // Backend call to create payment intent and confirm payment
-    const response = await fetch("/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        paymentMethodId,
-        amount: amount * 100, // Stripe uses cents
-      }),
-    });
+    try {
+      const response = await createPaymentIntent({ paymentMethodId, amount });
+      const { success, error } = response.data;
 
-    const { clientSecret } = await response.json();
+      if (!success) throw new Error(error);
 
-    // Confirm the payment intent using Stripe on the frontend
-    const stripe = useStripe();
-    const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret);
-
-    if (error) {
-      throw new Error("Payment failed");
-    } else if (paymentIntent.status === "succeeded") {
-      // Update Firestore with the payment status
+      // Update Firebase booking as paid
       await db.collection("bookings").doc(bookingId).update({
         status: "paid",
       });
+
       return { bookingId, status: "paid" };
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -63,16 +36,8 @@ const payingSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserBookings.pending, (state) => {
+      .addCase(initiatePayment.pending, (state) => {
         state.loading = true;
-      })
-      .addCase(fetchUserBookings.fulfilled, (state, action) => {
-        state.bookings = action.payload;
-        state.loading = false;
-      })
-      .addCase(fetchUserBookings.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
       })
       .addCase(initiatePayment.fulfilled, (state, action) => {
         const { bookingId, status } = action.payload;
@@ -80,9 +45,11 @@ const payingSlice = createSlice({
         if (booking) {
           booking.status = status;
         }
+        state.loading = false;
       })
       .addCase(initiatePayment.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.payload;
+        state.loading = false;
       });
   },
 });

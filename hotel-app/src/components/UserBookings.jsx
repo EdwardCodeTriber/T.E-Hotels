@@ -12,15 +12,13 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import {fetchUserBookings} from "../Redux/bookingSlice"
+import { fetchUserBookings } from "../Redux/bookingSlice";
 
 const UserBookings = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { bookings, loading, error } = useSelector((state) => state.bookings);
   const user = useSelector((state) => state.auth.user);
-
- 
 
   useEffect(() => {
     if (user) {
@@ -34,12 +32,7 @@ const UserBookings = () => {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
       </Box>
     );
@@ -48,8 +41,6 @@ const UserBookings = () => {
   if (error) {
     return <Typography>Error: {error}</Typography>;
   }
-
-
 
   return (
     <div>
@@ -60,34 +51,34 @@ const UserBookings = () => {
       <Grid container spacing={4}>
         {bookings.map((booking) => (
           <Grid item xs={12} md={6} lg={4} key={booking.id}>
-            <Card
-              sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}
-            >
+            <Card sx={{ backgroundColor: "rgba(0, 0, 0, 0.7)", color: "white" }}>
               {booking.picture && (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={booking.picture}
-                  alt={booking.roomType}
-                />
+                <CardMedia component="img" height="140" image={booking.picture} alt={booking.roomType} />
               )}
               <CardContent>
-                <Typography variant="h6">
-                  Room Type: {booking.roomType}
-                </Typography>
+                <Typography variant="h6">Room Type: {booking.roomType}</Typography>
                 <Typography>Check-in: {booking.checkInDate}</Typography>
                 <Typography>Check-out: {booking.checkOutDate}</Typography>
                 <Typography>Price per night: R {booking.price}</Typography>
                 <Typography>Status: {booking.status}</Typography>
               </CardContent>
+              {booking.status === "Pending" && (
+                <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handlePay(booking.id, booking.price)}
+                  >
+                    Pay
+                  </Button>
+                </CardActions>
+              )}
             </Card>
           </Grid>
         ))}
       </Grid>
       <br />
-      {bookings.length === 0 && (
-        <Typography>No pending bookings found.</Typography>
-      )}
+      {bookings.length === 0 && <Typography>No pending bookings found.</Typography>}
     </div>
   );
 };
