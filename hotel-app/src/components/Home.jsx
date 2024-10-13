@@ -16,16 +16,15 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-  Drawer, // Import Drawer
-  List, // Import List
-  ListItem, // Import ListItem
-  ListItemText, // Import ListItemText
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import MenuIcon from "@mui/icons-material/Menu"; // Import MenuIcon
+import MenuIcon from "@mui/icons-material/Menu"; 
 import picture from "../assets/outdoor-2.jpg";
 import UserBookings from "./UserBookings";  
 import { logoutUser, fetchUser } from "../Redux/authSlice"; 
@@ -39,16 +38,29 @@ const Home = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false); // State for the drawer
+  const [drawerOpen, setDrawerOpen] = useState(false); 
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [filteredAccommodations, setFilteredAccommodations] = useState([]); // State for filtered accommodations
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
   const user = useSelector((state) => state.auth.user);
+  const accommodations = useSelector((state) => state.accommodations.accommodations); // Select accommodations from state
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
+
+  // Function to filter accommodations based on search term
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    const filtered = accommodations.filter((accommodation) =>
+      accommodation.location.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredAccommodations(filtered); // Update filtered accommodations immediately
+  };
 
   const handleAccountClickOpen = () => {
     setAccountOpen(true);
@@ -65,7 +77,6 @@ const Home = () => {
         setSnackbarMessage("Logged out successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        // Open logout confirmation dialog
         setLogoutDialogOpen(true); 
       }, 1500); // 1.5 seconds delay for logout
     }).finally(() => {
@@ -82,7 +93,6 @@ const Home = () => {
     setSnackbarOpen(false);
   };
 
-  // Function to toggle the drawer
   const toggleDrawer = (open) => (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
@@ -106,7 +116,7 @@ const Home = () => {
               edge="start"
               color="inherit"
               aria-label="menu"
-              onClick={toggleDrawer(true)} // Open the drawer
+              onClick={toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -122,12 +132,16 @@ const Home = () => {
           </Toolbar>
         </AppBar>
 
-        {/* Drawer for navigation */}
-        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          sx={{color:"blue"}}
+        >
           <Box
             sx={{ width: 250 }}
             role="presentation"
-            onClick={toggleDrawer(false)} // Close the drawer on click
+            onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
             <List>
@@ -148,10 +162,12 @@ const Home = () => {
           <Box textAlign="center" sx={{ mb: 4 }}>
             <TextField
               variant="outlined"
-              placeholder="Search"
+              placeholder="Search by location"
               InputProps={{
                 startAdornment: <SearchIcon />,
               }}
+              value={searchTerm} // Bind the input to searchTerm
+              onChange={handleSearchChange} // Call the search function directly on input change
             />
           </Box>
 
@@ -164,9 +180,10 @@ const Home = () => {
             </Typography>
           </Box>
 
-          <AccommodationList/>
+          {/* Pass filtered accommodations to the AccommodationList component */}
+          <AccommodationList accommodations={filteredAccommodations} /> 
 
-          <br/>
+          <br />
           <UserBookings />
 
           {/* Account Info Dialog */}

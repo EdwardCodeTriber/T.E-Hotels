@@ -46,7 +46,7 @@ const Register = () => {
     }
 
     // Dispatch registration and add delay
-    dispatch(registerUser({ email, password })).then((result) => {
+    dispatch(registerUser({ email, password, name })).then((result) => {
       setTimeout(() => {
         if (result.meta.requestStatus === "fulfilled") {
           setSnackbarMessage("Account registered successfully");

@@ -1,18 +1,31 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../Firebase/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { auth, db } from "../Firebase/firebase";
 
 // Async action to handle user register
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async ({ email, password }, thunkAPI) => {
+  async ({ email, password, name }, thunkAPI) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+
+      // Get the user's UID
+      const { uid } = userCredential.user;
+
+      // 'Users' collection
+      await addDoc(collection(db, "Users"), {
+        email,
+        uid,
+        name,
+        createdAt: new Date(),
+      });
+
       return userCredential.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
