@@ -16,16 +16,21 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  Drawer, // Import Drawer
+  List, // Import List
+  ListItem, // Import ListItem
+  ListItemText, // Import ListItemText
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import MenuIcon from "@mui/icons-material/Menu"; // Import MenuIcon
 import picture from "../assets/outdoor-2.jpg";
-import RoomList from "./RoomList";
 import UserBookings from "./UserBookings";  
 import { logoutUser, fetchUser } from "../Redux/authSlice"; 
 import Footer from './Footer';
+import AccommodationList from "./AccommodationList";
 
 const Home = () => {
   const [accountOpen, setAccountOpen] = useState(false);
@@ -34,7 +39,8 @@ const Home = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  
+  const [drawerOpen, setDrawerOpen] = useState(false); // State for the drawer
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
@@ -76,6 +82,14 @@ const Home = () => {
     setSnackbarOpen(false);
   };
 
+  // Function to toggle the drawer
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
   return (
     <div>
       <Box
@@ -88,15 +102,17 @@ const Home = () => {
       >
         <AppBar position="static" sx={{ backgroundColor: "#172554" }}>
           <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)} // Open the drawer
+            >
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               T.E. Hotels
             </Typography>
-            <Button color="inherit">Home</Button>
-            <Button color="inherit">Contact Us</Button>
-            <Button color="inherit">About Us</Button>
-            <IconButton color="inherit">
-              <FavoriteIcon />
-            </IconButton>
             <IconButton color="inherit" onClick={handleAccountClickOpen}>
               <AccountCircleIcon />
             </IconButton>
@@ -105,6 +121,28 @@ const Home = () => {
             </IconButton>
           </Toolbar>
         </AppBar>
+
+        {/* Drawer for navigation */}
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+          <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={toggleDrawer(false)} // Close the drawer on click
+            onKeyDown={toggleDrawer(false)}
+          >
+            <List>
+              <ListItem button onClick={() => navigate("/gallery")}>
+                <ListItemText primary="Gallery" />
+              </ListItem>
+              <ListItem button onClick={() => navigate("/accommodations")}>
+                <ListItemText primary="Accommodations" />
+              </ListItem>
+              <ListItem button onClick={() => navigate("/favorites")}>
+                <ListItemText primary="Favorites" />
+              </ListItem>
+            </List>
+          </Box>
+        </Drawer>
 
         <Container sx={{ mt: 4 }}>
           <Box textAlign="center" sx={{ mb: 4 }}>
@@ -126,11 +164,9 @@ const Home = () => {
             </Typography>
           </Box>
 
-          {/* Use RoomList component to display rooms */}
-          <RoomList />
+          <AccommodationList/>
 
           <br/>
-          {/* Display user bookings */}
           <UserBookings />
 
           {/* Account Info Dialog */}

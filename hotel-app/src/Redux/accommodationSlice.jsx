@@ -11,7 +11,7 @@ export const fetchAccommodations = createAsyncThunk("accommodations/fetchAccommo
     ...doc.data(),
   }))
   // Filter accommodations according to their availability
-  .filter((accommodation) => accommodation.availability === "Available"); 
+  .filter((accommodation) => accommodation.available === true); 
   return accommodations;
 });
 
