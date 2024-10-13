@@ -3,8 +3,8 @@
 ## what to Install before Running the project
 ## Copy and paste in terminal to run node modules
 
-- npm @reduxjs/toolkit react-redux react-router-dom firebase @stripe/react-stripe-js @stripe/stripe-js
-- npm @mui/material @emotion/styled @emotion/react @mui/icons-material
+- npm install @reduxjs/toolkit react-redux react-router-dom firebase @stripe/react-stripe-js @stripe/stripe-js
+- npm install @mui/material @emotion/styled @emotion/react @mui/icons-material
 - npm install dayjs
 
 ## Figma Design
