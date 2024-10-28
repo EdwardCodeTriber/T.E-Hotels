@@ -17,6 +17,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Snackbar,
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
@@ -43,6 +44,7 @@ const AccommodationList = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   useEffect(() => {
     dispatch(fetchAccommodations());
@@ -76,13 +78,12 @@ const AccommodationList = () => {
     setPaymentError('');
   };
 
-  // Calculate the total price based on selected dates
   const calculateTotalPrice = () => {
     if (checkIn && checkOut && selectedAccommodation) {
       const checkInDate = new Date(checkIn);
       const checkOutDate = new Date(checkOut);
       const differenceInTime = checkOutDate - checkInDate;
-      const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Convert milliseconds to days
+      const differenceInDays = differenceInTime / (1000 * 3600 * 24); 
 
       if (differenceInDays > 0) {
         const totalCost = differenceInDays * selectedAccommodation.price;
@@ -112,7 +113,7 @@ const AccommodationList = () => {
         const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
           type: 'card',
           card: {
-            number: '4242424242424242', // Test card number
+            number: '4242424242424242',
             exp_month: 12,
             exp_year: 2025,
             cvc: '123',
@@ -145,6 +146,7 @@ const AccommodationList = () => {
         await dispatch(createReservation(bookingData)).unwrap();
         
         setPaymentSuccess(true);
+        setShowSnackbar(true);
 
         setTimeout(() => {
           handleDialogClose();
@@ -158,6 +160,10 @@ const AccommodationList = () => {
     } else {
       setPaymentError('Please select valid check-in and check-out dates.');
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setShowSnackbar(false);
   };
 
   if (loading) {
@@ -268,55 +274,54 @@ const AccommodationList = () => {
 
             <Box mt={2}>
               <TextField
-                label="Check-In Date"
+                label="Check-in"
                 type="date"
-                fullWidth
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
+                fullWidth
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
-                label="Check-Out Date"
+                label="Check-out"
                 type="date"
-                fullWidth
                 value={checkOut}
                 onChange={(e) => setCheckOut(e.target.value)}
+                fullWidth
                 InputLabelProps={{ shrink: true }}
-                sx={{ mt: 2 }}
               />
             </Box>
 
             {totalPrice > 0 && (
-              <Typography variant="h6" mt={2}>
+              <Typography variant="h6" color="text.primary" mt={2}>
                 Total Price: R {totalPrice}
               </Typography>
             )}
 
-            {paymentError && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {paymentError}
-              </Alert>
-            )}
-            {paymentSuccess && (
-              <Alert severity="success" sx={{ mt: 2 }}>
-                Booking confirmed!
-              </Alert>
-            )}
+            {paymentError && <Alert severity="error" sx={{ mt: 2 }}>{paymentError}</Alert>}
+            {paymentSuccess && <Alert severity="success" sx={{ mt: 2 }}>Booking Successful!</Alert>}
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={handleDialogClose}>Close</Button>
+            <Button onClick={handleDialogClose} color="secondary">
+              Close
+            </Button>
             <Button
               onClick={handleBooking}
-              variant="contained"
               color="primary"
-              disabled={paymentLoading}
+              disabled={paymentLoading || bookingLoading}
             >
-              {paymentLoading ? <CircularProgress size={24} /> : 'Confirm Booking'}
+              {paymentLoading || bookingLoading ? 'Processing...' : 'Book Now'}
             </Button>
           </DialogActions>
         </Dialog>
       )}
+
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="Booking Successful!"
+      />
     </>
   );
 };
