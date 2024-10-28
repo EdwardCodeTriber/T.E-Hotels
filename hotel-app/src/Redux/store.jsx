@@ -3,6 +3,7 @@ import userReducer from "./authSlice";
 import accommodationReducer from './accommodationSlice';
 import bookingReducer from './bookingSlice'
 import payingReducer from './payingSlice';
+import reservationReducer from "./reservationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     accommodations: accommodationReducer,
     bookings: bookingReducer,
     paying: payingReducer,
+    reservations: reservationReducer,
   },
 });
 

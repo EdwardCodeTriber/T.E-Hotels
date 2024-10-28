@@ -6,6 +6,7 @@
 - npm install @reduxjs/toolkit react-redux react-router-dom firebase @stripe/react-stripe-js @stripe/stripe-js
 - npm install @mui/material @emotion/styled @emotion/react @mui/icons-material
 - npm install dayjs
+- npm install react-material-ui-carousel
 
 ## Figma Design
 https://www.figma.com/design/3E9EaUjgFxv51ad1tD5UyV/UI%2FUX?node-id=6-88&node-type=CANVAS&t=q8oer6jEzswlR72y-0

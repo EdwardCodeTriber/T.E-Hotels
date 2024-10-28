@@ -20,16 +20,18 @@ import {
   List,
   ListItem,
   ListItemText,
+  Avatar,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
-import MenuIcon from "@mui/icons-material/Menu"; 
+import MenuIcon from "@mui/icons-material/Menu";
 import picture from "../assets/outdoor-2.jpg";
-import UserBookings from "./UserBookings";  
-import { logoutUser, fetchUser } from "../Redux/authSlice"; 
+import UserBookings from "./UserBookings";
+import { logoutUser, fetchUser } from "../Redux/authSlice";
 import Footer from './Footer';
 import AccommodationList from "./AccommodationList";
+import { updateUserProfile } from "../Redux/profileSlice"; 
 
 const Home = () => {
   const [accountOpen, setAccountOpen] = useState(false);
@@ -41,17 +43,47 @@ const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false); 
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [filteredAccommodations, setFilteredAccommodations] = useState([]); // State for filtered accommodations
+  const [name, setName] = useState(""); // Local state for user name
+  const [avatar, setAvatar] = useState(""); // Local state for user avatar
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user); // Access user from Redux state
   const accommodations = useSelector((state) => state.accommodations.accommodations); // Select accommodations from state
+
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   if (!user) {
+  //     // If user is not logged in, redirect to login page
+  //     navigate("/LogIn");
+  //   } else {
+  //     // Fetch user details if logged in
+  //     dispatch(fetchUser());
+  //     setName(user.name);
+  //     setAvatar(user.avatar);
+  //   }
+  // }, [user, dispatch, navigate]);
+
+  const handleProfileUpdate = () => {
+    dispatch(updateUserProfile({ uid: user.uid, name, avatar }))
+      .unwrap()
+      .then(() => {
+        setSnackbarMessage("Profile updated successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      })
+      .catch((error) => {
+        setSnackbarMessage(`Update failed: ${error}`);
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      });
+  };
+  
   // Function to filter accommodations based on search term
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -199,12 +231,31 @@ const Home = () => {
               </Typography>
               {user ? (
                 <Box>
-                  <Typography variant="body1">Email: {user.email}</Typography>
+                  {/* Avatar */}
+                  <Avatar src={user.avatar} alt={user.name} sx={{ width: 56, height: 56, mb: 2 }} />
+
+                  {/* Name Field */}
+                  <TextField
+                    label="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)} 
+                    fullWidth
+                  />
+
+                  {/* Avatar URL Field */}
+                  <TextField
+                    label="Avatar URL"
+                    value={avatar}
+                    onChange={(e) => setAvatar(e.target.value)} 
+                    fullWidth
+                  />
+
+                  <Button variant="contained" color="primary" onClick={handleProfileUpdate}>
+                    Save Changes
+                  </Button>
                 </Box>
               ) : (
-                <Typography variant="body1">
-                  No user information available
-                </Typography>
+                <Typography variant="body1">No user information available. Sign up or sign In</Typography>
               )}
             </DialogContent>
           </Dialog>

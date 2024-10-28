@@ -54,11 +54,26 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 
 // Thunk to monitor Firebase auth state changes
 export const fetchUser = createAsyncThunk("auth/fetchUser", async (_, { dispatch }) => {
-  return new Promise((resolve) => {
-    onAuthStateChanged(auth, (user) => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        dispatch(setUser({ email: user.email, uid: user.uid }));
-        resolve(user);
+        const { email, uid } = user;
+        
+        try {
+          const userDoc = await addDoc(collection(db, "Users", uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            dispatch(setUser({ email, uid, ...userData }));
+            resolve({ email, uid, ...userData });
+          } else {
+            console.error("No Firestore data found");
+            dispatch(setUser({ email, uid }));
+            resolve({ email, uid });
+          }
+        } catch (error) {
+          console.error("Failed to fetch Firestore data:", error);
+          reject(error);
+        }
       } else {
         dispatch(clearUser());
         resolve(null);
