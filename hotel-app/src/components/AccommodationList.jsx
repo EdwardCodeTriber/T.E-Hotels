@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAccommodations } from '../Redux/accommodationSlice';
-import { createReservation } from '../Redux/reservationSlice'; 
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAccommodations } from "../Redux/accommodationSlice";
+import { createReservation } from "../Redux/reservationSlice";
 import {
   Card,
   CardContent,
@@ -18,32 +18,43 @@ import {
   Button,
   TextField,
   Snackbar,
-} from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import Carousel from 'react-material-ui-carousel';
-import { loadStripe } from '@stripe/stripe-js';
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+import Carousel from "react-material-ui-carousel";
+import PaymentForm from "./PaymentForm";
+// import { loadStripe } from "@stripe/stripe-js";
+// import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import WifiIcon from "@mui/icons-material/Wifi";
+import PoolIcon from "@mui/icons-material/Pool";
+import RoomServiceIcon from "@mui/icons-material/RoomService";
+import LocalParkingIcon from "@mui/icons-material/LocalParking";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 
-const stripePromise = loadStripe('pk_test_51Px59aJPbpXk7YOzwZFEmqEENYeYAO4o0NQRX3CJbIee2TGOTUMQTw0KlswD4swqvkHSvJSsG9lc0DrRM5yMGBaU00o9vhiAem');
+// const stripePromise = loadStripe(
+//   "pk_test_51Px59aJPbpXk7YOzwZFEmqEENYeYAO4o0NQRX3CJbIee2TGOTUMQTw0KlswD4swqvkHSvJSsG9lc0DrRM5yMGBaU00o9vhiAem"
+// );
 
 const AccommodationList = () => {
   const dispatch = useDispatch();
-  const accommodations = useSelector((state) => state.accommodations.accommodations);
+
+  const accommodations = useSelector(
+    (state) => state.accommodations.accommodations
+  );
   const loading = useSelector((state) => state.accommodations.loading);
   const error = useSelector((state) => state.accommodations.error);
-  const user = useSelector((state) => state.auth.user); // Assuming auth state
-  const bookingLoading = useSelector((state) => state.bookings.loading);
-  const bookingError = useSelector((state) => state.bookings.error);
+  const user = useSelector((state) => state.auth.user); // auth state
 
   const [favorites, setFavorites] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAccommodation, setSelectedAccommodation] = useState(null);
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [paymentError, setPaymentError] = useState('');
+  const [paymentError, setPaymentError] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   useEffect(() => {
@@ -59,7 +70,9 @@ const AccommodationList = () => {
   };
 
   const handleShare = (accommodationName) => {
-    navigator.clipboard.writeText(`Check out this accommodation: ${accommodationName}`);
+    navigator.clipboard.writeText(
+      `Check out this accommodation: ${accommodationName}`
+    );
     alert(`Shared: ${accommodationName}`);
   };
 
@@ -71,11 +84,11 @@ const AccommodationList = () => {
   const handleDialogClose = () => {
     setOpenDialog(false);
     setSelectedAccommodation(null);
-    setCheckIn('');
-    setCheckOut('');
+    setCheckIn("");
+    setCheckOut("");
     setTotalPrice(0);
     setPaymentSuccess(false);
-    setPaymentError('');
+    setPaymentError("");
   };
 
   const calculateTotalPrice = () => {
@@ -83,13 +96,13 @@ const AccommodationList = () => {
       const checkInDate = new Date(checkIn);
       const checkOutDate = new Date(checkOut);
       const differenceInTime = checkOutDate - checkInDate;
-      const differenceInDays = differenceInTime / (1000 * 3600 * 24); 
+      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
       if (differenceInDays > 0) {
         const totalCost = differenceInDays * selectedAccommodation.price;
         setTotalPrice(totalCost);
       } else {
-        alert('Check-out date must be after check-in date');
+        alert("Check-out date must be after check-in date");
       }
     }
   };
@@ -100,66 +113,40 @@ const AccommodationList = () => {
 
   const handleBooking = async () => {
     if (!user) {
-      setPaymentError('Please login to make a booking');
+      setPaymentError("Please login to make a booking");
       return;
     }
 
-    if (checkIn && checkOut && totalPrice > 0) {
-      setPaymentLoading(true);
-      
-      try {
-        const stripe = await stripePromise;
-        
-        const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
-          type: 'card',
-          card: {
-            number: '4242424242424242',
-            exp_month: 12,
-            exp_year: 2025,
-            cvc: '123',
-          },
-          billing_details: {
-            name: user.displayName || 'Test User',
-            email: user.email || 'test@example.com',
-          },
-        });
+    // Close accommodation dialog and open payment dialog
+    setOpenDialog(false);
+    setOpenPaymentDialog(true);
+  };
 
-        if (paymentMethodError) {
-          throw new Error(paymentMethodError.message);
-        }
+  const handlePaymentSuccess = (paymentMethodId) => {
+    // Proceed with booking confirmation after payment is successful
+    const bookingData = {
+      userId: user.uid,
+      accommodationId: selectedAccommodation.id,
+      accommodationName: selectedAccommodation.name,
+      checkIn,
+      checkOut,
+      totalPrice,
+      paymentMethodId,
+      status: "confirmed",
+    };
 
-        const bookingData = {
-          userId: user.uid,
-          accommodationId: selectedAccommodation.id,
-          accommodationName: selectedAccommodation.name,
-          checkIn,
-          checkOut,
-          totalPrice,
-          paymentMethodId: paymentMethod.id,
-          status: 'confirmed',
-          location: selectedAccommodation.location,
-          guests: 1,
-          paymentStatus: 'completed',
-          photoUrl: selectedAccommodation.photos[0]
-        };
-
-        await dispatch(createReservation(bookingData)).unwrap();
-        
-        setPaymentSuccess(true);
+    dispatch(createReservation(bookingData))
+      .unwrap()
+      .then(() => {
         setShowSnackbar(true);
+        setOpenPaymentDialog(false);
+        setTimeout(() => handleDialogClose(), 2000);
+      })
+      .catch((err) => setPaymentError(err.message));
+  };
 
-        setTimeout(() => {
-          handleDialogClose();
-        }, 2000);
-
-      } catch (err) {
-        setPaymentError(err.message);
-      } finally {
-        setPaymentLoading(false);
-      }
-    } else {
-      setPaymentError('Please select valid check-in and check-out dates.');
-    }
+  const handlePaymentError = (errorMessage) => {
+    setPaymentError(errorMessage);
   };
 
   const handleSnackbarClose = () => {
@@ -168,7 +155,12 @@ const AccommodationList = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -176,11 +168,25 @@ const AccommodationList = () => {
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <Alert severity="error">Error: {error}</Alert>
       </Box>
     );
   }
+
+  const amenityIcons = {
+    Wi_Fi: { icon: <WifiIcon />, color: "#4CAF50" },
+    Pool: { icon: <PoolIcon />, color: "#2196F3" },
+    Room_Service: { icon: <RoomServiceIcon />, color: "#FF5722" },
+    Parking: { icon: <LocalParkingIcon />, color: "#FFC107" },
+    Gym: { icon: <FitnessCenterIcon />, color: "black" },
+    Restaurant: { icon: <RestaurantIcon />, color: "red" },
+  };
 
   return (
     <>
@@ -190,11 +196,11 @@ const AccommodationList = () => {
             <Card
               onClick={() => handleCardClick(accommodation)}
               sx={{
-                cursor: 'pointer',
-                transition: 'transform 0.3s, box-shadow 0.3s',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+                cursor: "pointer",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
                 },
               }}
             >
@@ -208,7 +214,9 @@ const AccommodationList = () => {
                 <Typography variant="h5" component="div">
                   {accommodation.name}
                 </Typography>
-                <Typography color="text.secondary">Price: R {accommodation.price}</Typography>
+                <Typography color="text.secondary">
+                  Price: R {accommodation.price}
+                </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Location: {accommodation.location}
                 </Typography>
@@ -216,13 +224,22 @@ const AccommodationList = () => {
                   Rating: {accommodation.rating} ★
                 </Typography>
 
-                <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mt={2}
+                >
                   <IconButton
                     onClick={(e) => {
                       e.stopPropagation();
                       handleFavoriteToggle(accommodation.id);
                     }}
-                    color={favorites.includes(accommodation.id) ? 'secondary' : 'default'}
+                    color={
+                      favorites.includes(accommodation.id)
+                        ? "secondary"
+                        : "default"
+                    }
                   >
                     <FavoriteIcon />
                   </IconButton>
@@ -240,20 +257,28 @@ const AccommodationList = () => {
           </Grid>
         ))}
       </Grid>
-
       {selectedAccommodation && (
-        <Dialog open={openDialog} onClose={handleDialogClose} maxWidth="md" fullWidth>
+        <Dialog
+          open={openDialog}
+          onClose={handleDialogClose}
+          maxWidth="md"
+          fullWidth
+        >
           <DialogContent>
             <Typography variant="h4" component="h2" gutterBottom>
               {selectedAccommodation.name}
             </Typography>
             <Carousel autoPlay={false} navButtonsAlwaysVisible>
               {selectedAccommodation.photos.map((photo, index) => (
-                <Box key={index} sx={{ height: 300, overflow: 'hidden' }}>
+                <Box key={index} sx={{ height: 300, overflow: "hidden" }}>
                   <img
                     src={photo}
                     alt={`${selectedAccommodation.name} ${index}`}
-                    style={{ width: '100%', objectFit: 'cover', height: '100%' }}
+                    style={{
+                      width: "100%",
+                      objectFit: "cover",
+                      height: "100%",
+                    }}
                   />
                 </Box>
               ))}
@@ -268,11 +293,32 @@ const AccommodationList = () => {
             <Typography variant="body2" color="text.secondary">
               Rating: {selectedAccommodation.rating} ★
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Amenities: {selectedAccommodation.amenities.join(', ')}
+            <Typography variant="body2" color="text.secondary" mt={2}>
+              Amenities:
+              <Box display="flex" gap={2} flexWrap="wrap" mt={1}>
+                {selectedAccommodation.amenities.map((amenity, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    sx={{
+                      backgroundColor:
+                        amenityIcons[amenity]?.color || "#e0e0e0",
+                      color: "#fff",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    {amenityIcons[amenity]?.icon}
+                    <Typography variant="body2" ml={0.5}>
+                      {amenity}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
             </Typography>
 
-            <Box mt={2}>
+            <Box mt={2} sx={{ display: "flex", gap: 2 }}>
               <TextField
                 label="Check-in"
                 type="date"
@@ -297,24 +343,51 @@ const AccommodationList = () => {
               </Typography>
             )}
 
-            {paymentError && <Alert severity="error" sx={{ mt: 2 }}>{paymentError}</Alert>}
-            {paymentSuccess && <Alert severity="success" sx={{ mt: 2 }}>Booking Successful!</Alert>}
+            {/* <CardElement options={{ hidePostalCode: true }} />
+
+            {paymentError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {paymentError}
+              </Alert>
+            )}
+            {paymentSuccess && (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                Booking Successful!
+              </Alert>
+            )} */}
           </DialogContent>
 
           <DialogActions>
             <Button onClick={handleDialogClose} color="secondary">
               Close
             </Button>
-            <Button
-              onClick={handleBooking}
-              color="primary"
-              disabled={paymentLoading || bookingLoading}
-            >
-              {paymentLoading || bookingLoading ? 'Processing...' : 'Book Now'}
+            <Button onClick={handleBooking} color="primary">
+              Confirm & Pay
             </Button>
           </DialogActions>
         </Dialog>
       )}
+
+      <Dialog
+        open={openPaymentDialog}
+        onClose={() => setOpenPaymentDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogContent>
+          <Typography variant="h6">Complete Payment</Typography>
+          <PaymentForm
+            totalPrice={totalPrice}
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentError={handlePaymentError}
+          />
+          {paymentError && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {paymentError}
+            </Alert>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Snackbar
         open={showSnackbar}
