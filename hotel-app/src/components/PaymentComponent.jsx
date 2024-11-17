@@ -1,103 +1,106 @@
 import React, { useState } from 'react';
-import { useStripe, useElements, PaymentElement } from '@stripe/stripe-js';
-import {
-  Box,
-  Button,
-  Typography,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
+import { loadStripe } from '@stripe/stripe-js';
+import { Card, CardContent, Button, Typography, Box, Alert } from '@/components/ui/card';
 
-const PaymentComponent = ({ totalPrice, checkIn, checkOut, onSuccess }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe('pk_test_51Px59aJPbpXk7YOzwZFEmqEENYeYAO4o0NQRX3CJbIee2TGOTUMQTw0KlswD4swqvkHSvJSsG9lc0DrRM5yMGBaU00o9vhiAem');
 
-  const handleBooking = async (event) => {
-    event.preventDefault();
+const PaymentComponent = ({ accommodation, checkIn, checkOut, totalPrice }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    if (!stripe || !elements || !checkIn || !checkOut) {
-      return;
-    }
-
-    setIsLoading(true);
-    setErrorMessage('');
-
+  const handlePayment = async () => {
     try {
-      // Create payment intent on your server
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: Math.round(totalPrice * 100), // Convert to cents
-          currency: 'zar',
-          checkIn,
-          checkOut,
-        }),
-      });
+      setLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        throw new Error('Failed to create payment intent');
-      }
-
-      const { clientSecret } = await response.json();
-
-      // Confirm the payment
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/booking-confirmation`,
-        },
+      const stripe = await stripePromise;
+      
+      // Create a checkout session directly with Stripe
+      const { error } = await stripe.redirectToCheckout({
+        lineItems: [
+          {
+            price_data: {
+              currency: 'zar',
+              unit_amount: totalPrice * 100, // Stripe expects amounts in cents
+              product_data: {
+                name: accommodation.name,
+                description: `Check-in: ${checkIn}, Check-out: ${checkOut}`,
+                images: accommodation.photos ? [accommodation.photos[0]] : [],
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${window.location.origin}/booking/success`,
+        cancel_url: `${window.location.origin}/booking/cancel`,
       });
 
       if (error) {
-        throw new Error(error.message);
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        onSuccess(paymentIntent);
+        throw error;
       }
     } catch (err) {
-      setErrorMessage(err.message || 'Something went wrong');
+      setError(err.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 500, mx: 'auto', p: 3 }}>
-      <form onSubmit={handleBooking}>
-        <Typography variant="h6" gutterBottom>
-          Payment Details
+    <Card className="w-full max-w-md mx-auto mt-8">
+      <CardContent className="p-6">
+        <Typography variant="h5" className="mb-6 font-bold">
+          Booking Summary
         </Typography>
         
-        <PaymentElement />
-        
-        {errorMessage && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Alert>
-        )}
-        
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          disabled={isLoading || !stripe}
-          sx={{ mt: 3 }}
-        >
-          {isLoading ? (
-            <CircularProgress size={24} />
-          ) : (
-            `Pay R${totalPrice.toFixed(2)}`
+        <Box className="space-y-4">
+          <div className="border-b pb-4">
+            <Typography variant="subtitle1" className="font-semibold">Accommodation</Typography>
+            <Typography variant="body1">{accommodation.name}</Typography>
+          </div>
+          
+          <div className="border-b pb-4">
+            <Typography variant="subtitle1" className="font-semibold">Check-in</Typography>
+            <Typography variant="body1">{new Date(checkIn).toLocaleDateString()}</Typography>
+          </div>
+          
+          <div className="border-b pb-4">
+            <Typography variant="subtitle1" className="font-semibold">Check-out</Typography>
+            <Typography variant="body1">{new Date(checkOut).toLocaleDateString()}</Typography>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <Typography variant="subtitle1" className="font-semibold">Total Amount</Typography>
+            <Typography variant="h4" className="text-primary">R {totalPrice.toFixed(2)}</Typography>
+          </div>
+
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              {error}
+            </Alert>
           )}
-        </Button>
-      </form>
-    </Box>
+
+          <Button
+            onClick={handlePayment}
+            disabled={loading}
+            className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-lg font-semibold mt-6"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                Processing...
+              </span>
+            ) : (
+              'Pay Now'
+            )}
+          </Button>
+          
+          <Typography variant="body2" className="text-center text-gray-500 mt-4">
+            Secure payment powered by Stripe
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 
