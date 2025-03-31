@@ -1,5 +1,8 @@
 # T.E Somo Hotels
 
+## Hosted link
+https://t-e-hotels.vercel.app/
+
 ## what to Install before Running the project
 ## Copy and paste in terminal to run node modules
 
