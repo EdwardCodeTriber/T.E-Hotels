@@ -1,18 +1,15 @@
 // src/Redux/reservationSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../Firebase/firebase';
-import firebase from 'firebase/app';
 
 // Async thunk to create a reservation in Firestore
 export const createReservation = createAsyncThunk(
   'reservations/createReservation',
   async (reservationData, { rejectWithValue }) => {
     try {
-      const { uid } = getState().auth.user;
       const reservationRef = db.collection('reservations').doc();
       await reservationRef.set({
         ...reservationData,
-        userId: uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
       

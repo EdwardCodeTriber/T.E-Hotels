@@ -36,9 +36,7 @@ const LogIn = () => {
     e.preventDefault();
 
     dispatch(loginUser({ email, password })).then((result) => {
-      firebase.auth().onAuthStateChanged(user => {
-        dispatch(setUser(user)); // This will now only store serializable data
-      });
+      
       // Introduce a 2.5 second delay for loader visibility
       setTimeout(() => {
         if (result.meta.requestStatus === "fulfilled") {
